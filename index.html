@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        
+        background-image: url("https://wallpapercave.com/wp/wp1913288.jpg");
+        background-size: 100%;
+    }
+    h1{
+        color: rgb(255, 0, 0);
+    text-align: center;
+    font-size: 60px;
+    }
+    #div1{
+        height: 80px;
+        width: 45%;
+        background-color: white;
+       margin-left: 380px;
+       border-radius: 28px;
+    }
+    #container{
+        display: flex;
+        
+    }
+    
+    #input,#output{
+        flex: 1;
+        background-color: white;
+        margin: 5%;
+        height: 320px;
+        border-radius: 40px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+    #input-text{
+        width: 70%;
+        height: 240px;
+        margin-left: 100px;
+        margin-top: 7px;
+        font-size: 20px
+    }
+    #inp_lang{
+        border: none;
+        height: 50px;
+        border-radius: 5px;
+        background: teal;
+        color: white;
+        font-size: bold;
+       
+    }
+    #out_lang{
+        border: none;
+        height: 50px;
+        border-radius: 5px;
+        background: teal;
+        color: white;
+        font-size: bold;
+       
+    }
+    #output_value{
+        font-size: 20px;
+        margin-left: 50px;
+        margin-top: 40px;
+    }
+    
+</style>
+<body>
+    <div id="div1"> <h1>Ak's Translate App</h1></div>
+   
+   <div id="container">
+       <div id="input">
+           <select name="inp_lang" id="inp_lang">
+               <option value="en">English</option>
+               <option value="hi">Hindi</option>
+               <option value="es">Spanish</option>
+               <option value="zh">Chinese</option>
+               <option value="ru">Russian</option>
+               <option value="pt">Portuguese</option>
+               
+           </select>
+           <textarea name="input-text" id="input-text" oninput="debounce(Translate,500)" ></textarea>
+       </div>
+       <div id="output">
+        <select name="out_lang" id="out_lang">
+            <option value="en">English</option>
+            <option value="hi">Hindi</option>
+            <option value="es">Spanish</option>
+            <option value="zh">Chinese</option>
+            <option value="ru">Russian</option>
+            <option value="pt">Portuguese</option>
+            
+        </select>
+        <p id="output_value"></p>
+       </div>
+   </div>
+   
+  
+</body>
+</html>
+<script>
+    let id;
+    async function Translate(){
+        try{
+            const input = document.getElementById("input-text").value;
+            console.log(input)
+            const input_lang = document.getElementById("inp_lang").value;
+            console.log(input_lang)
+            const output_lang = document.getElementById("out_lang").value;
+            console.log(output_lang)
+
+            // Post Requist
+
+            const res = await fetch("https://libretranslate.de/translate",{
+               
+                method:"POST",
+                body:JSON.stringify({
+                    q: input,
+                    source: input_lang,
+                    target: output_lang,
+                    format: "text",
+                }),
+               
+                headers:{
+                    "Content-Type": "application/json",
+                }
+            });
+           
+
+            const data = await res.json();
+            console.log(data);
+            document.getElementById("output_value").innerText = data.translatedText;
+            if(data.translatedText==undefined){
+                document.getElementById("output_value").innerText = " ";
+            }
+
+        }
+
+        catch(err){
+            console.log(err)
+        }
+    }
+
+    function debounce(func,delay){
+        if(id){
+            clearInterval(id)
+        }
+      id = setTimeout(function(){
+            func()
+        },delay)
+    }
+</script>
